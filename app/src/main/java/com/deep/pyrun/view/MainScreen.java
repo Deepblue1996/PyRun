@@ -50,8 +50,6 @@ public class MainScreen extends TBaseScreen {
     @BindView(R.id.title)
     TextView title;
 
-    long now = 0;
-
     private static final int RECORD_REQUEST_CODE = 101;
 
     private MediaProjectionManager projectionManager;

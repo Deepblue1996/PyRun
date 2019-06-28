@@ -42,8 +42,8 @@ dependencies {
     compile 'com.deep:DpWork:2.6.8'
     compile 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
-    // compile 'com.rmtheis:tess-two:9.0.0'
-    compile(name: 'tesseract4android-release', ext: 'aar')
+    compile 'com.rmtheis:tess-two:9.0.0'
+    //compile(name: 'tesseract4android-release', ext: 'aar')
     compile 'com.jaredrummler:android-shell:1.0.0'
     compile project(':openCVLibrary346')
 }
