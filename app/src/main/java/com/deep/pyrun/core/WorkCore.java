@@ -1,0 +1,121 @@
+package com.deep.pyrun.core;
+
+import android.Manifest;
+import android.os.Environment;
+
+import com.deep.pyrun.view.MainScreen;
+import com.intelligence.dpwork.DpWorkCore;
+import com.intelligence.dpwork.annotation.DpInit;
+import com.intelligence.dpwork.annotation.DpPermission;
+import com.intelligence.dpwork.util.Lag;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+/**
+ * Class - 框架入口
+ * <p>
+ * Created by Deepblue on 2018/9/29 0029.
+ */
+@DpPermission({
+        Manifest.permission.RECORD_AUDIO,
+        Manifest.permission.SYSTEM_ALERT_WINDOW,
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE})
+@DpInit(MainScreen.class)
+public class WorkCore extends DpWorkCore {
+
+    /**
+     * TessBaseAPI初始化用到的第一个参数，是个目录。
+     */
+    public static final String DATAPATH = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator;
+    /**
+     * 在DATAPATH中新建这个目录，TessBaseAPI初始化要求必须有这个目录。
+     */
+    public static final String tessdata = DATAPATH + File.separator + "tessdata";
+    /**
+     * TessBaseAPI初始化测第二个参数，就是识别库的名字不要后缀名。
+     */
+    public static final String DEFAULT_LANGUAGE = "chi_sim";
+    /**
+     * assets中的文件名
+     */
+    public static final String DEFAULT_LANGUAGE_NAME = DEFAULT_LANGUAGE + ".traineddata";
+    /**
+     * 保存到SD卡中的完整文件名
+     */
+    public static final String LANGUAGE_PATH = tessdata + File.separator + DEFAULT_LANGUAGE_NAME;
+
+
+    /**
+     * 框架初始化，并设置第一页面
+     */
+    @Override
+    protected void initCore() {
+
+    }
+
+    @Override
+    protected void permissionComplete(boolean b) {
+        if (b) {
+            copyToSD(LANGUAGE_PATH, DEFAULT_LANGUAGE_NAME);
+        }
+    }
+
+    /**
+     * 将assets中的识别库复制到SD卡中
+     *
+     * @param path 要存放在SD卡中的 完整的文件名。这里是"/storage/emulated/0//tessdata/chi_sim.traineddata"
+     * @param name assets中的文件名 这里是 "chi_sim.traineddata"
+     */
+    public void copyToSD(String path, String name) {
+        Lag.i("copyToSD: " + path);
+        Lag.i("copyToSD: " + name);
+
+        //如果存在就删掉
+        File f = new File(path);
+        if (f.exists()) {
+            f.delete();
+        }
+        if (!f.exists()) {
+            File p = new File(f.getParent());
+            if (!p.exists()) {
+                p.mkdirs();
+            }
+            try {
+                f.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        InputStream is = null;
+        OutputStream os = null;
+        try {
+            is = this.getAssets().open(name);
+            File file = new File(path);
+            os = new FileOutputStream(file);
+            byte[] bytes = new byte[2048];
+            int len = 0;
+            while ((len = is.read(bytes)) != -1) {
+                os.write(bytes, 0, len);
+            }
+            os.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (is != null)
+                    is.close();
+                if (os != null)
+                    os.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+}
