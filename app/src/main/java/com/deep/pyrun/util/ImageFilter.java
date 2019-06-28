@@ -17,6 +17,12 @@ import android.graphics.Point;
 
 import com.intelligence.dpwork.util.Lag;
 
+import org.opencv.core.Core;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
+
 /**
  * 图片灰度化和二值化处理
  * Created by kaifa on 2016/2/14.
@@ -175,6 +181,39 @@ public class ImageFilter {
         }
         bitmapTouchXy.touch(someNum, lastX, lastY);
         Lag.i("存在符合 " + someNum + "% 坐标 x:" + lastX + "y:" + lastY);
+    }
+
+    private Mat runs(Mat img, Mat templ) {
+
+        int result_rows = img.rows() - img.rows() + 1;
+        int result_cols = templ.cols() - templ.cols() + 1;
+        Mat g_result = new Mat(result_rows, result_cols, CvType.CV_32FC1);
+        Imgproc.matchTemplate(img, templ, g_result, Imgproc.TM_CCOEFF); // 归一化平方差匹配法
+        // Imgproc.matchTemplate(g_src, g_tem, g_result,
+        // Imgproc.TM_CCOEFF_NORMED); // 归一化相关系数匹配法
+
+        // Imgproc.matchTemplate(g_src, g_tem, g_result, Imgproc.TM_CCOEFF);
+        // //
+        // 相关系数匹配法：1表示完美的匹配；-1表示最差的匹配。
+
+        // Imgproc.matchTemplate(g_src, g_tem, g_result, Imgproc.TM_CCORR); //
+        // 相关匹配法
+
+        // Imgproc.matchTemplate(g_src, g_tem, g_result,Imgproc.TM_SQDIFF); //
+        // 平方差匹配法：该方法采用平方差来进行匹配；最好的匹配值为0；匹配越差，匹配值越大。
+
+        // Imgproc.matchTemplate(g_src, g_tem,g_result,Imgproc.TM_CCORR_NORMED);
+        // // 归一化相关匹配法
+        Core.normalize(g_result, g_result, 0, 1, Core.NORM_MINMAX, -1, new Mat());
+        org.opencv.core.Point matchLocation = new org.opencv.core.Point();
+        Core.MinMaxLocResult mmlr = Core.minMaxLoc(g_result);
+
+        matchLocation = mmlr.maxLoc; // 此处使用maxLoc还是minLoc取决于使用的匹配算法
+        Imgproc.rectangle(img, matchLocation,
+                new org.opencv.core.Point(matchLocation.x + templ.cols(), matchLocation.y + templ.rows()),
+                new Scalar(0, 0, 0, 0));
+
+        return img;
     }
 
     public interface BitmapTouchXy {

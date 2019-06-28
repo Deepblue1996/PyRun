@@ -9,6 +9,11 @@ import com.intelligence.dpwork.annotation.DpInit;
 import com.intelligence.dpwork.annotation.DpPermission;
 import com.intelligence.dpwork.util.Lag;
 
+import org.opencv.android.BaseLoaderCallback;
+import org.opencv.android.InstallCallbackInterface;
+import org.opencv.android.LoaderCallbackInterface;
+import org.opencv.android.OpenCVLoader;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -55,7 +60,37 @@ public class WorkCore extends DpWorkCore {
      */
     @Override
     protected void initCore() {
+        initOpenCV();
+    }
 
+    public void initOpenCV() {
+        LoaderCallbackInterface mLoaderCallback = new BaseLoaderCallback(getApplicationContext()) {
+            @Override
+            public void onManagerConnected(int status) {
+                switch (status) {
+                    case LoaderCallbackInterface.SUCCESS: {
+                        Lag.i("OpenCV loaded successfully");
+                    }
+                    break;
+                    default: {
+                        super.onManagerConnected(status);
+                    }
+                    break;
+                }
+            }
+
+            @Override
+            public void onPackageInstall(int operation, InstallCallbackInterface callback) {
+
+            }
+        };
+        if (!OpenCVLoader.initDebug()) {
+            Lag.i("Internal OpenCV library not found. Using OpenCV Manager for initialization");
+            OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION, getApplicationContext(), mLoaderCallback);
+        } else {
+            Lag.i("OpenCV library found inside package. Using it!");
+            mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
+        }
     }
 
     @Override
