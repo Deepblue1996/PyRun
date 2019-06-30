@@ -120,7 +120,7 @@ public class ScreenFindUtil {
      * @return
      */
     public static MatXy findQuMoChouJiang(Resources res, Bitmap bitmapSrc) {
-        Bitmap bitmap = Bitmap.createBitmap(bitmapSrc, 1678, 602, 374, 100);
+        Bitmap bitmap = Bitmap.createBitmap(bitmapSrc, 969, 453, 216, 206);
         Bitmap b = decodeResouce(res, R.mipmap.qumochoujiang);
 
         return ImageFilter.find(bitmap, b);
@@ -133,7 +133,7 @@ public class ScreenFindUtil {
      * @return
      */
     public static MatXy findQuMoJiXu(Resources res, Bitmap bitmapSrc) {
-        Bitmap bitmap = Bitmap.createBitmap(bitmapSrc, 1678, 602, 374, 100);
+        Bitmap bitmap = Bitmap.createBitmap(bitmapSrc, 1099, 568, 283, 106);
         Bitmap b = decodeResouce(res, R.mipmap.jixuqumo);
 
         return ImageFilter.find(bitmap, b);

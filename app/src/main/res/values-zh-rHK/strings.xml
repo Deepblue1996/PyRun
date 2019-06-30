@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">匿名客</string>
+    <string name="fenxi">脚本分析指令</string>
+    <string name="anonymous">Anonymous</string>
 </resources>

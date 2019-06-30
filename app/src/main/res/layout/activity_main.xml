@@ -1,21 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/darkText"
-    android:orientation="vertical"
-    android:layout_height="match_parent">
+    android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/screenImg"
-        android:scaleType="fitCenter"
-        android:layout_width="match_parent"
-        android:layout_height="200dp" />
-
-    <TextView
-        android:padding="10dp"
-        android:id="@+id/title"
-        android:textColor="@color/darkText"
+    <com.intelligence.dpwork.weight.StatusBarPaddingView
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="为了保证正常运行，请保证以下运行条件:"
+            android:textColor="#0f0"
+            android:textSize="@dimen/smallSFontSize" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1：系统必须同意提供root权限"
+            android:textColor="@color/mBackGround"
+            android:textSize="@dimen/smallSFontSize" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="2：系统必须同意所申请的权限"
+            android:textColor="@color/mBackGround"
+            android:textSize="@dimen/smallSFontSize" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="3：系统必须录制屏幕"
+            android:textColor="@color/mBackGround"
+            android:textSize="@dimen/smallSFontSize" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="4：系统必须录制屏幕"
+            android:textColor="@color/mBackGround"
+            android:textSize="@dimen/smallSFontSize" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="5：系统打开应用的悬浮窗显示"
+            android:textColor="@color/mBackGround"
+            android:textSize="@dimen/smallSFontSize" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="6：分辨率 1080*2160"
+            android:textColor="@color/mBackGround"
+            android:textSize="@dimen/smallSFontSize" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="以上六点缺一不可，如果进入游戏，没有出现预览视图，请检查以上六点"
+            android:textColor="#0f0"
+            android:textSize="@dimen/smallSFontSize" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="满足条件，请最小化应用，进入游戏自动AI处理"
+            android:textColor="#0f0"
+            android:textSize="@dimen/smallSFontSize" />
+
+    </LinearLayout>
 
 </LinearLayout>

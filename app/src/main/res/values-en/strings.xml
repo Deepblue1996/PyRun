@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Anonymous guest</string>
+    <string name="fenxi">Analytical Directives</string>
+    <string name="anonymous">Anonymous</string>
 </resources>

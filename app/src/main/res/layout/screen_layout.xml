@@ -39,10 +39,22 @@
                     <TextView
                         android:id="@+id/contentText"
                         android:layout_width="200dp"
-                        android:layout_height="30dp"
+                        android:layout_height="wrap_content"
+                        android:background="#66000000"
+                        android:paddingStart="5dp"
+                        android:paddingTop="5dp"
+                        android:paddingEnd="5dp"
+                        android:textSize="10sp"
+                        android:text="@string/app_name"
+                        android:textColor="#0f0" />
+                    <TextView
+                        android:id="@+id/contentText2"
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
                         android:background="#66000000"
                         android:padding="5dp"
-                        android:text="@string/app_name"
+                        android:textSize="10sp"
+                        android:text="@string/fenxi"
                         android:textColor="@color/mBackGround" />
                 </LinearLayout>
             </com.prohua.roundlayout.RoundAngleFrameLayout>

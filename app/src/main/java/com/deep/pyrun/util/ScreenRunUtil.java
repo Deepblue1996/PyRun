@@ -2,6 +2,7 @@ package com.deep.pyrun.util;
 
 import android.graphics.Bitmap;
 
+import com.deep.pyrun.view.MainScreen;
 import com.intelligence.dpwork.util.Lag;
 
 import org.opencv.android.Utils;
@@ -94,6 +95,7 @@ public class ScreenRunUtil {
             // 判断上一次命令是否相同
             if(!peopleIsRun) {
                 peopleIsRunUpdate = System.currentTimeMillis();
+                MainScreen.scriptName = "人物在移动";
             }
             peopleIsRun = true;
             return true;
@@ -102,6 +104,7 @@ public class ScreenRunUtil {
             // 判断上一次命令是否相同
             if(peopleIsRun) {
                 peopleIsRunUpdate = System.currentTimeMillis();
+                MainScreen.scriptName = "人物没有在移动";
             }
             peopleIsRun = false;
             return false;

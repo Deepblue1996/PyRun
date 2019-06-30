@@ -31,8 +31,6 @@ import com.intelligence.dpwork.itface.RunUi;
 import com.intelligence.dpwork.util.Lag;
 import com.intelligence.dpwork.util.ToastUtil;
 
-import butterknife.BindView;
-
 import static android.content.Context.BIND_AUTO_CREATE;
 import static android.content.Context.MEDIA_PROJECTION_SERVICE;
 
@@ -41,18 +39,17 @@ import static android.content.Context.MEDIA_PROJECTION_SERVICE;
  * <p>
  * Created by Deepblue on 2019/6/25 0025.
  */
-@DpStatus(blackFont = true)
+@DpStatus(blackFont = false)
 @DpLayout(R.layout.activity_main)
 public class MainScreen extends TBaseScreen {
 
     private static final String appName = "com.tencent.ft";
+    public static String scriptName = "";
 
     private View screen;
     private ImageView screenImg;
     private TextView contentText;
-
-    @BindView(R.id.title)
-    TextView title;
+    private TextView contentText2;
 
     private static final int RECORD_REQUEST_CODE = 101;
 
@@ -68,6 +65,7 @@ public class MainScreen extends TBaseScreen {
 
         screenImg = screen.findViewById(R.id.screenImg);
         contentText = screen.findViewById(R.id.contentText);
+        contentText2 = screen.findViewById(R.id.contentText2);
 
         createToucher(screen);
 
@@ -166,7 +164,6 @@ public class MainScreen extends TBaseScreen {
                                 @Override
                                 public void run() {
 
-                                    Lag.i("分析: ScreenSeeUtil初始化");
                                     ScreenSeeUtil.init(_dpActivity.getResources(), bitmap);
 
                                     if (ScreenSeeUtil.get() == null) {
@@ -174,50 +171,16 @@ public class MainScreen extends TBaseScreen {
                                     }
 
                                     try {
-
-                                        Lag.i("分析: ScreenState分析");
                                         // 界面判断分析
                                         final ScreenState screenState = ScreenDeUtil.runs();
 
                                         // 给予界面的分析结果
                                         DoModeUtil.get().update(screenState);
 
-                                        runUi(new RunUi() {
-                                            @Override
-                                            public void run() {
-                                                contentText.setText("还没做分析");
+                                        // 显示
+                                        runTextShow(bitmap, screenState);
 
-                                                if (screenState.zhuJieMainType == 1) {
-                                                    if (screenState.huoDongRiLiQuMoDianJiType == 1) {
-                                                        contentText.setText("活动日历驱魔点击界面");
-                                                    } else {
-
-                                                        // 判断人物是否在跑
-                                                        ScreenRunUtil.get().addBitmap(bitmap);
-                                                        ScreenRunUtil.get().isRun();
-
-
-                                                        if (screenState.renWuLanType == 1) {
-                                                            contentText.setText("右侧任务栏任务已打开");
-                                                        } else if (screenState.renWuLanType == 2) {
-                                                            contentText.setText("右侧任务栏队伍已打开");
-                                                        } else {
-                                                            contentText.setText("右侧任务栏未打开");
-                                                        }
-                                                    }
-                                                } else {
-                                                    if (screenState.zhanDouJieMainType == 1) {
-                                                        contentText.setText("战斗界面");
-                                                    } else if (screenState.huoDongRiLiType == 1) {
-                                                        contentText.setText("活动日历界面");
-                                                        if (screenState.huoDongRiLiQuMoType == 1) {
-                                                            contentText.setText("活动日历驱魔界面");
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        });
-
+                                        // 释放
                                         ScreenSeeUtil.get().recycle();
 
                                     } catch (Exception e) {
@@ -236,4 +199,42 @@ public class MainScreen extends TBaseScreen {
         }
     }
 
+    private void runTextShow(final Bitmap bitmap, final ScreenState screenState) {
+
+        runUi(new RunUi() {
+            @Override
+            public void run() {
+                contentText2.setText(scriptName);
+                contentText.setText("还没做分析");
+
+                if (screenState.zhuJieMainType == 1) {
+                    if (screenState.huoDongRiLiQuMoDianJiType == 1) {
+                        contentText.setText("活动日历驱魔点击界面");
+                    } else {
+
+                        // 判断人物是否在跑
+                        ScreenRunUtil.get().addBitmap(bitmap);
+                        ScreenRunUtil.get().isRun();
+
+                        if (screenState.renWuLanType == 1) {
+                            contentText.setText("右侧任务栏任务已打开");
+                        } else if (screenState.renWuLanType == 2) {
+                            contentText.setText("右侧任务栏队伍已打开");
+                        } else {
+                            contentText.setText("右侧任务栏未打开");
+                        }
+                    }
+                } else {
+                    if (screenState.zhanDouJieMainType == 1) {
+                        contentText.setText("战斗界面");
+                    } else if (screenState.huoDongRiLiType == 1) {
+                        contentText.setText("活动日历界面");
+                        if (screenState.huoDongRiLiQuMoType == 1) {
+                            contentText.setText("活动日历驱魔界面");
+                        }
+                    }
+                }
+            }
+        });
+    }
 }

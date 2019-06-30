@@ -4,6 +4,7 @@ import android.Manifest;
 import android.os.Environment;
 
 import com.deep.pyrun.util.PackageName;
+import com.deep.pyrun.view.LogoScreen;
 import com.deep.pyrun.view.MainScreen;
 import com.intelligence.dpwork.DpWorkCore;
 import com.intelligence.dpwork.annotation.DpInit;
@@ -31,7 +32,7 @@ import java.io.OutputStream;
         Manifest.permission.SYSTEM_ALERT_WINDOW,
         Manifest.permission.READ_EXTERNAL_STORAGE,
         Manifest.permission.WRITE_EXTERNAL_STORAGE})
-@DpInit(MainScreen.class)
+@DpInit(LogoScreen.class)
 public class WorkCore extends DpWorkCore {
 
     /**
