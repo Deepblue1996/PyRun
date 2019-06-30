@@ -51,22 +51,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="4：系统必须录制屏幕"
-            android:textColor="@color/mBackGround"
-            android:textSize="@dimen/smallSFontSize" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="5：系统打开应用的悬浮窗显示"
+            android:text="4：系统打开应用的悬浮窗显示"
             android:textColor="@color/mBackGround"
             android:textSize="@dimen/smallSFontSize" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="6：分辨率 1080*2160"
+            android:text="5：分辨率 1080*2160"
             android:textColor="@color/mBackGround"
             android:textSize="@dimen/smallSFontSize" />
 
@@ -74,7 +66,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="以上六点缺一不可，如果进入游戏，没有出现预览视图，请检查以上六点"
+            android:text="以上五点缺一不可，如果进入游戏，没有出现预览视图，请检查以上五点"
             android:textColor="#0f0"
             android:textSize="@dimen/smallSFontSize" />
 

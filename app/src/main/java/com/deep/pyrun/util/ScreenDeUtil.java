@@ -26,6 +26,15 @@ public class ScreenDeUtil {
                 screenState.huoDongRiLiQuMoDianJiType = ScreenSeeUtil.get().isHuoDongRiLiQuMoDianJi();
                 Lag.i("分析: 主界面->任务栏关闭->驱魔任务参加点击");
             }
+            // 获取活动驱魔抽奖
+            screenState.huoDongQuMoChouJiangType = ScreenSeeUtil.get().isQuMoChouJiang();
+            if (screenState.huoDongQuMoChouJiangType != 1) {
+                // 获取活动继续驱魔
+                screenState.huoDongQuMoJiXuType = ScreenSeeUtil.get().isJiXuQuMo();
+                Lag.i("分析: 继续驱魔");
+            } else if(screenState.huoDongQuMoChouJiangType == 1) {
+                Lag.i("分析: 驱魔抽奖");
+            }
         } else if (screenState.zhuJieMainType == 0) { // 不在主界面
             Lag.i("分析: 不在主界面:"+screenState.zhuJieMainType);
             // 获取战斗界面
