@@ -12,60 +12,85 @@ import com.jaredrummler.android.shell.Shell;
 
 public class CmdSend {
 
-    public static final String dakaiRenWu = "input tap 2125 236";
-    public static final String guanBiRenWu = "input tap 1750 236";
-    public static final String dakaiRenWuBan = "input tap 1850 236";
-    public static final String guanBiDuiWuBan = "input tap 2125 236";
-    public static final String renWuGunDongDingBu = "input swipe 1850 266 1850 600";
-    public static final String daKaiHuoDong = "input tap 550 47";
-    public static final String dianJiYiTiaoLong = "input tap 463 362";
-    public static final String canJiaQuMo = "input tap 1092 290";
-    public static final String quMoRenWuCanJia = "input tap 1905 661";
-    public static final String quMoRenWuCanJiaZiDongPiPei = "input tap 1276 952";
+    public enum Dos {
+        DaKaiRenWu,
+        GuanBiRenWu,
+        DakaiRenWuBan,
+        GuanBiDuiWuBan,
+        RenWuGunDongDingBu,
+        DaKaiHuoDong,
+        DianJiYiTiaoLong,
+        CanJiaQuMo,
+        QuMoRenWuCanJia,
+        QuMoRenWuCanJiaZiDongPiPei,
+        QuMoChouJiang,
+        QuMoJiXu
+    }
 
-    public static void dos(int num) {
+    private static final String dakaiRenWu = "input tap 2125 236";
+    private static final String guanBiRenWu = "input tap 1750 236";
+    private static final String dakaiRenWuBan = "input tap 1850 236";
+    private static final String guanBiDuiWuBan = "input tap 2125 236";
+    private static final String renWuGunDongDingBu = "input swipe 1850 266 1850 600";
+    private static final String daKaiHuoDong = "input tap 550 47";
+    private static final String dianJiYiTiaoLong = "input tap 463 362";
+    private static final String canJiaQuMo = "input tap 1092 290";
+    private static final String quMoRenWuCanJia = "input tap 1905 661";
+    private static final String quMoRenWuCanJiaZiDongPiPei = "input tap 1276 952";
+    private static final String quMoChouJiang = "input tap 1033 535";
+    private static final String quMoJiXu = "input tap 1203 594";
+
+    public static void dos(Dos num) {
         CommandResult result;
         String str = "";
         switch (num) {
-            case 0:
+            case DaKaiRenWu:
                 str = dakaiRenWu;
                 Lag.i("执行打开任务");
                 break;
-            case 1:
+            case GuanBiRenWu:
                 str = guanBiRenWu;
                 Lag.i("执行关闭任务");
                 break;
-            case 2:
+            case DakaiRenWuBan:
                 str = dakaiRenWuBan;
                 Lag.i("执行打开任务面板");
                 break;
-            case 3:
+            case GuanBiDuiWuBan:
                 str = guanBiDuiWuBan;
                 Lag.i("执行打开队伍面板");
                 break;
-            case 4:
+            case RenWuGunDongDingBu:
                 str = renWuGunDongDingBu;
                 Lag.i("执行滑动到面板顶部");
                 break;
-            case 5:
+            case DaKaiHuoDong:
                 str = daKaiHuoDong;
                 Lag.i("打开活动面板");
                 break;
-            case 6:
+            case DianJiYiTiaoLong:
                 str = dianJiYiTiaoLong;
                 Lag.i("点击一条龙");
                 break;
-            case 7:
+            case CanJiaQuMo:
                 str = canJiaQuMo;
                 Lag.i("面板参加驱魔");
                 break;
-            case 8:
+            case QuMoRenWuCanJia:
                 str = quMoRenWuCanJia;
                 Lag.i("参加驱魔");
                 break;
-            case 9:
+            case QuMoRenWuCanJiaZiDongPiPei:
                 str = quMoRenWuCanJiaZiDongPiPei;
-                Lag.i("参加驱魔");
+                Lag.i("参加驱魔匹配");
+                break;
+            case QuMoChouJiang:
+                str = quMoChouJiang;
+                Lag.i("驱魔抽奖");
+                break;
+            case QuMoJiXu:
+                str = quMoJiXu;
+                Lag.i("继续驱魔");
                 break;
         }
         result = Shell.SU.run(str);

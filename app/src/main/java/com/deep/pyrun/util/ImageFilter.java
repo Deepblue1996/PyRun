@@ -13,10 +13,12 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Point;
 
+import com.deep.pyrun.bean.MatXy;
+import com.intelligence.dpwork.util.DoubleUtil;
 import com.intelligence.dpwork.util.Lag;
 
+import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -104,17 +106,17 @@ public class ImageFilter {
         //得到图形的宽度和长度
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
-        //创建二�?化图像 �?
+        //创建
         Bitmap binarymap = null;
         binarymap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
         //依次循环，对图像的像素进行处理 �?
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                //得到当前像素的�?
+                //得到当前像素的
                 int col = binarymap.getPixel(i, j);
-                //得到alpha通道的�?
+                //得到alpha通道的
                 int alpha = col & 0xFF000000;
-                //得到图像的像素RGB的�?
+                //得到图像的像素RGB的
                 int red = (col & 0x00FF0000) >> 16;
                 int green = (col & 0x0000FF00) >> 8;
                 int blue = (col & 0x000000FF);
@@ -129,61 +131,104 @@ public class ImageFilter {
                 }
                 // 新的ARGB
                 int newColor = alpha | (gray << 16) | (gray << 8) | gray;
-                //设置新图像的当前像素值 �?
+                //设置新图像的当前像素值
                 binarymap.setPixel(i, j, newColor);
             }
         }
         return binarymap;
     }
 
-    public static int whDuiBiBitmap(Bitmap src, Bitmap res) {
+    public static void isHaveInBitmap(Bitmap src, Bitmap res, BitmapTouchXy bitmapTouchXy) {
 
-        int someNum = 0;
-
-        if (src.getWidth() * src.getHeight() != res.getWidth() * res.getHeight()) {
-            return someNum;
-        }
-        for (int i = 0; i < src.getWidth(); i++) {
-            for (int j = 0; j < src.getHeight(); j++) {
-                if (src.getPixel(i, j) == res.getPixel(i, j)) {
-                    someNum++;
-                }
+        // 从左到右
+        int colors[] = new int[25];
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                colors[(i + 1) * (j + 1) - 1] = res.getPixel(res.getWidth() / 2 - 1 + j, res.getHeight() / 2 - 1 + i);
             }
         }
 
-        return someNum / (res.getWidth() * res.getHeight() / 100);
-    }
-
-    public static void isHaveInBitmap(Bitmap src, Bitmap res, BitmapTouchXy bitmapTouchXy) {
-
-        int someNum = 0;
-        int lastX = 0;
-        int lastY = 0;
+        int si = 0;
+        int x = 0;
+        int y = 0;
 
         for (int i = 0; i < src.getWidth(); i++) {
             for (int j = 0; j < src.getHeight(); j++) {
-                if (src.getPixel(i, j) == res.getPixel(0, 0)) {
-                    // 保证不超出
-                    if (i + res.getWidth() < src.getWidth() && j + res.getHeight() < src.getHeight()) {
-
-                        Bitmap srx = Bitmap.createBitmap(src, i, j, res.getWidth(), res.getHeight());
-
-                        int someNumTemp = whDuiBiBitmap(srx, res);
-
-                        if (someNumTemp > someNum) {
-                            lastX = i;
-                            lastY = j;
-                            someNum = someNumTemp;
+                // 最低要求
+                if (i < src.getWidth() - 5 && j < src.getHeight() - 5) {
+                    int num = 0;
+                    for (int k = 0; k < 5; k++) {
+                        for (int l = 0; l < 5; l++) {
+                            if (src.getPixel(i + (k + 1), j + (l + 1)) == colors[(k + 1) * (l + 1) - 1]) {
+                                num++;
+                            }
                         }
+                    }
+                    if (si < num) {
+                        si = num;
+                        x = i;
+                        y = j;
+                    }
+                    if (num == 24) {
+                        bitmapTouchXy.touch(24, i, j);
+                        return;
                     }
                 }
             }
         }
-        bitmapTouchXy.touch(someNum, lastX, lastY);
-        Lag.i("存在符合 " + someNum + "% 坐标 x:" + lastX + "y:" + lastY);
+        bitmapTouchXy.touch(si, x, y);
     }
 
-    private Mat runs(Mat img, Mat templ) {
+    public static MatXy find(Bitmap src, Bitmap res) {
+        Mat mat1 = new Mat();
+        Utils.bitmapToMat(src, mat1);
+        Mat mat2 = new Mat();
+        Utils.bitmapToMat(res, mat2);
+        MatXy matXy = runs(mat1, mat2);
+        Mat mat3 = matXy.mat;
+        Bitmap bitmap = Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight());
+        Utils.matToBitmap(mat3, bitmap);
+
+        Bitmap bitmap2 = Bitmap.createBitmap(src, matXy.x, matXy.y, matXy.w, matXy.h);
+        Mat mat4 = new Mat();
+        Utils.bitmapToMat(bitmap2, mat4);
+
+        Mat mat11 = new Mat();
+        Mat mat22 = new Mat();
+        Imgproc.cvtColor(mat2, mat11, Imgproc.COLOR_BGR2GRAY);
+        Imgproc.cvtColor(mat4, mat22, Imgproc.COLOR_BGR2GRAY);
+
+        double st = ImageFilter.comPareHist(mat11, mat22);
+
+        matXy.si = (float) DoubleUtil.round(st, 2);
+
+        if (st > 0.5) {
+            matXy.have = true;
+        } else {
+            matXy.have = false;
+        }
+        matXy.bitmap = bitmap;
+        matXy.bitmapRec = bitmap2;
+
+        src.recycle();
+        res.recycle();
+
+        return matXy;
+    }
+
+    /**
+     * 比较来个矩阵的相似度
+     *
+     * @param srcMat
+     * @param desMat
+     */
+    public static double comPareHist(Mat srcMat, Mat desMat) {
+        srcMat.convertTo(srcMat, CvType.CV_32F);
+        desMat.convertTo(desMat, CvType.CV_32F);
+        return Imgproc.compareHist(srcMat, desMat, Imgproc.CV_COMP_CORREL);
+    }
+
+    public static MatXy runs(Mat img, Mat templ) {
 
         int result_rows = img.rows() - img.rows() + 1;
         int result_cols = templ.cols() - templ.cols() + 1;
@@ -213,7 +258,23 @@ public class ImageFilter {
                 new org.opencv.core.Point(matchLocation.x + templ.cols(), matchLocation.y + templ.rows()),
                 new Scalar(0, 0, 0, 0));
 
-        return img;
+        double w = templ.cols();
+        double h = templ.rows();
+
+//        Mat tmp = new Mat();
+//        // 两个Mat对象差分求值
+//        Core.absdiff(mat3, mat4, tmp);
+//        // 计算矩阵元素之和
+//        Scalar scalar = Core.sumElems(tmp);
+//        System.out.println(scalar.toString());
+//
+//        if(scalar.val[0] > 777777) {
+//            System.out.println("存在运动物体");
+//        } else {
+//            System.out.println("不存在运动物体");
+//        }
+
+        return new MatXy((int) matchLocation.x, (int) matchLocation.y, (int) w, (int) h, 0, false, img, null, null);
     }
 
     public interface BitmapTouchXy {

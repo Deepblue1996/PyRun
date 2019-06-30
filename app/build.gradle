@@ -1,3 +1,8 @@
+tasks.whenTaskAdded{ task->
+    if(task.name == "lint") {
+        task.enabled=false
+    }
+}
 apply plugin: 'com.android.application'
 
 android {
@@ -18,10 +23,8 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-    }
-    repositories {
-        flatDir {
-            dirs 'libs'
+        debug {
+            project.gradle.startParameter.excludedTaskNames.add('lint')  // 屏蔽lint耗时检查
         }
     }
     sourceSets {
@@ -34,6 +37,10 @@ android {
         doNotStrip '*/mips/*.so'
         doNotStrip '*/mips64/*.so'
     }
+    dexOptions{
+        // incremental true
+        javaMaxHeapSize "4g"
+    }
 }
 
 dependencies {
@@ -45,5 +52,6 @@ dependencies {
     compile 'com.rmtheis:tess-two:9.0.0'
     //compile(name: 'tesseract4android-release', ext: 'aar')
     compile 'com.jaredrummler:android-shell:1.0.0'
+    compile 'ywl.ywl5320:wlmedia:1.0.0-beta17'
     compile project(':openCVLibrary346')
 }

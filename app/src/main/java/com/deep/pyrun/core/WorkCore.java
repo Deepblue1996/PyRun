@@ -3,6 +3,7 @@ package com.deep.pyrun.core;
 import android.Manifest;
 import android.os.Environment;
 
+import com.deep.pyrun.util.PackageName;
 import com.deep.pyrun.view.MainScreen;
 import com.intelligence.dpwork.DpWorkCore;
 import com.intelligence.dpwork.annotation.DpInit;
@@ -60,7 +61,9 @@ public class WorkCore extends DpWorkCore {
      */
     @Override
     protected void initCore() {
+        PackageName.checkUsageStateAccessPermission(getApplicationContext());
         initOpenCV();
+        // copyToSD(LANGUAGE_PATH, DEFAULT_LANGUAGE_NAME);
     }
 
     public void initOpenCV() {

@@ -1,33 +1,35 @@
 package com.deep.pyrun.view;
 
+import android.annotation.TargetApi;
+import android.app.usage.UsageEvents;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.RequiresApi;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.deep.pyrun.R;
 import com.deep.pyrun.base.TBaseScreen;
-import com.deep.pyrun.util.CmdSend;
-import com.deep.pyrun.util.ImageFilter;
-import com.deep.pyrun.util.RecordService;
-import com.deep.pyrun.util.TextFilter;
+import com.deep.pyrun.bean.ScreenState;
+import com.deep.pyrun.broadcast.ScreenBroadcastReceive;
+import com.deep.pyrun.service.RecordService;
+import com.deep.pyrun.util.DoModeUtil;
+import com.deep.pyrun.util.PackageName;
+import com.deep.pyrun.util.ScreenDeUtil;
+import com.deep.pyrun.util.ScreenRunUtil;
+import com.deep.pyrun.util.ScreenSeeUtil;
 import com.intelligence.dpwork.annotation.DpLayout;
 import com.intelligence.dpwork.annotation.DpStatus;
-import com.intelligence.dpwork.util.DoubleUtil;
+import com.intelligence.dpwork.itface.RunUi;
 import com.intelligence.dpwork.util.Lag;
-
-import java.util.Timer;
-import java.util.TimerTask;
+import com.intelligence.dpwork.util.ToastUtil;
 
 import butterknife.BindView;
 
@@ -35,7 +37,7 @@ import static android.content.Context.BIND_AUTO_CREATE;
 import static android.content.Context.MEDIA_PROJECTION_SERVICE;
 
 /**
- * Class -
+ * Class - 主
  * <p>
  * Created by Deepblue on 2019/6/25 0025.
  */
@@ -43,8 +45,10 @@ import static android.content.Context.MEDIA_PROJECTION_SERVICE;
 @DpLayout(R.layout.activity_main)
 public class MainScreen extends TBaseScreen {
 
+    private static final String appName = "com.tencent.ft";
+
+    private View screen;
     private ImageView screenImg;
-    private ImageView screenImg2;
     private TextView contentText;
 
     @BindView(R.id.title)
@@ -59,38 +63,42 @@ public class MainScreen extends TBaseScreen {
     @Override
     public void init() {
 
-        View screen = createView(R.layout.screen_layout);
+        // 悬浮窗创建
+        screen = createView(R.layout.screen_layout);
 
         screenImg = screen.findViewById(R.id.screenImg);
-        screenImg2 = screen.findViewById(R.id.screenImg2);
         contentText = screen.findViewById(R.id.contentText);
 
         createToucher(screen);
 
+        // 绑定服务
         Intent intent = new Intent(_dpActivity, RecordService.class);
         _dpActivity.bindService(intent, connection, BIND_AUTO_CREATE);
 
+        // 申请录制屏幕，不做保存
         projectionManager = (MediaProjectionManager) _dpActivity.getSystemService(MEDIA_PROJECTION_SERVICE);
 
         Intent captureIntent = projectionManager.createScreenCaptureIntent();
         startActivityForResult(captureIntent, RECORD_REQUEST_CODE);
 
-        initCmd();
-    }
-
-    private void initCmd() {
-        //_dpActivity.moveTaskToBack(false);
-        //kaiQiQuMo();
     }
 
     private ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName className, IBinder service) {
-            DisplayMetrics metrics = new DisplayMetrics();
-            _dpActivity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
             RecordService.RecordBinder binder = (RecordService.RecordBinder) service;
             recordService = binder.getRecordService();
-            recordService.setConfig(metrics.widthPixels, metrics.heightPixels, metrics.densityDpi);
+
+            recordService.screenBroadcastReceive.setScreenListener(new ScreenBroadcastReceive.ScreenListener() {
+                @Override
+                public void has() {
+                    //int rotaion = _dpActivity.getWindowManager().getDefaultDisplay().getRotation() * 90;
+                    recordService.stopRecord();
+                    recordService.startRecord();
+                    hasShowToast = false;
+                }
+            });
         }
 
         @Override
@@ -101,102 +109,18 @@ public class MainScreen extends TBaseScreen {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        ScreenRunUtil.get().recycle();
     }
 
-    private Timer timer;
+    private boolean hasShowToast = false;
+    private boolean hasShowInit = false;
 
-    private int buZhou = 0;
+    // 判断ft是否在运行
+    private boolean isRun = false;
+    // 判断是否正在分析界面
+    private boolean canFenXi = false;
 
-    private void quXiaoQuMo() {
-        buZhou = 0;
-        if (timer != null) {
-            timer.cancel();
-            timer = null;
-        }
-    }
-
-    private void kaiQiQuMo() {
-        quXiaoQuMo();
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                switch (buZhou) {
-                    case 0:
-                        CmdSend.dos(5);
-                        buZhou = 1;
-                        break;
-                    case 1:
-                        CmdSend.dos(6);
-                        buZhou = 2;
-                        break;
-                    case 2:
-                        CmdSend.dos(7);
-                        buZhou = 3;
-                        break;
-                    case 3:
-                        CmdSend.dos(8);
-                        buZhou = 0;
-                        quXiaoQuMo();
-                        break;
-                }
-            }
-        }, 0, 3000);
-    }
-
-    public void haveNewBit(final Bitmap bitmap) {
-
-        float bi = 2;
-        float w = 1080;
-        float h = 540;
-
-        float x = 0;
-        float y = 2160 / 2 - h / 2;
-
-        final float xx = x + (float) DoubleUtil.divide(1796, 2, 2);
-        final float xy = y + (float) DoubleUtil.divide(60, 2, 2);
-        final float xw = (float) DoubleUtil.divide(364, 2, 2);
-        final float xh = (float) DoubleUtil.divide(80, 2, 2);
-
-        Bitmap map1 = Bitmap.createBitmap(bitmap, (int) xx, (int) xy, (int) xw, (int) xh);
-        Bitmap renwu = BitmapFactory.decodeResource(_dpActivity.getResources(), R.mipmap.renwu, null);
-        //Bitmap duiwu = BitmapFactory.decodeResource(_dpActivity.getResources(), R.mipmap.duiwu, null);
-
-        ImageFilter.isHaveInBitmap(map1, renwu, new ImageFilter.BitmapTouchXy() {
-            @Override
-            public void touch(int si, int x, int y) {
-                if (si > 10) {
-                    if (x < 10) {
-                        Lag.i("找到任务面板");
-                        contentText.setText("找到任务面板");
-                        //CmdSend.dos(4);
-
-                        // 检测内容
-                        Bitmap map2 = Bitmap.createBitmap(bitmap, (int) xx, (int) xy, (int) xw, (int) (6 * xh));
-
-                        String str = TextFilter.bitmap2Text(map2);
-                        if (!str.contains("驱")) {
-                            kaiQiQuMo();
-                        }
-                    } else {
-                        Lag.i("找到队伍面板");
-                        contentText.setText("找到队伍面板");
-                        CmdSend.dos(2);
-                    }
-                    //renWuMainBan(false);
-                } else {
-                    Lag.i("没有找到任务面板");
-                    contentText.setText("没有找到任务面板");
-                    CmdSend.dos(0);
-                }
-            }
-        });
-
-        screenImg2.setImageBitmap(map1);
-    }
-
-    private long nowSystem = 0;
-
+    @SuppressWarnings("all")
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -206,14 +130,107 @@ public class MainScreen extends TBaseScreen {
             recordService.startRecord();
 
             recordService.setBitmapScreenListener(new RecordService.BitmapScreenListener() {
+                @TargetApi(Build.VERSION_CODES.M)
                 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
                 @Override
-                public void screenShow(Bitmap bitmap) {
-                    screenImg.setImageBitmap(bitmap);
-                    if (nowSystem == 0 || System.currentTimeMillis() - nowSystem > 4000) {
-                        haveNewBit(bitmap);
-                        nowSystem = System.currentTimeMillis();
+                public void screenShow(final Bitmap bitmap) {
+                    if (PackageName.isRunApp(getContext(), appName) == UsageEvents.Event.MOVE_TO_FOREGROUND) {
+                        if (!hasShowToast) {
+                            screen.setVisibility(View.VISIBLE);
+                            hasShowToast = true;
+                            isRun = true;
+                            // 开启驱魔脚本
+                            DoModeUtil.get().start();
+                            Lag.i("分析: Ft进入");
+                        }
+                    } else {
+                        if (!hasShowToast) {
+                            screen.setVisibility(View.GONE);
+                            hasShowToast = true;
+                            isRun = false;
+                            Lag.i("分析: Ft未进入");
+                        }
                     }
+                    if (!hasShowInit) {
+                        ToastUtil.showSuccess("初始化引擎成功，请进入游戏");
+                        hasShowInit = true;
+                    }
+                    if (isRun) {
+
+                        Lag.i("分析: Ft进入");
+
+                        if (!canFenXi) {
+                            canFenXi = true;
+
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    Lag.i("分析: ScreenSeeUtil初始化");
+                                    ScreenSeeUtil.init(_dpActivity.getResources(), bitmap);
+
+                                    if (ScreenSeeUtil.get() == null) {
+                                        return;
+                                    }
+
+                                    try {
+
+                                        Lag.i("分析: ScreenState分析");
+                                        // 界面判断分析
+                                        final ScreenState screenState = ScreenDeUtil.runs();
+
+                                        // 给予界面的分析结果
+                                        DoModeUtil.get().update(screenState);
+
+                                        runUi(new RunUi() {
+                                            @Override
+                                            public void run() {
+                                                contentText.setText("还没做分析");
+
+                                                if (screenState.zhuJieMainType == 1) {
+                                                    if (screenState.huoDongRiLiQuMoDianJiType == 1) {
+                                                        contentText.setText("活动日历驱魔点击界面");
+                                                    } else {
+
+                                                        // 判断人物是否在跑
+                                                        ScreenRunUtil.get().addBitmap(bitmap);
+                                                        ScreenRunUtil.get().isRun();
+
+
+                                                        if (screenState.renWuLanType == 1) {
+                                                            contentText.setText("右侧任务栏任务已打开");
+                                                        } else if (screenState.renWuLanType == 2) {
+                                                            contentText.setText("右侧任务栏队伍已打开");
+                                                        } else {
+                                                            contentText.setText("右侧任务栏未打开");
+                                                        }
+                                                    }
+                                                } else {
+                                                    if (screenState.zhanDouJieMainType == 1) {
+                                                        contentText.setText("战斗界面");
+                                                    } else if (screenState.huoDongRiLiType == 1) {
+                                                        contentText.setText("活动日历界面");
+                                                        if (screenState.huoDongRiLiQuMoType == 1) {
+                                                            contentText.setText("活动日历驱魔界面");
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        });
+
+                                        ScreenSeeUtil.get().recycle();
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    canFenXi = false;
+                                }
+                            }).start();
+
+                        }
+                    }
+                    screenImg.setImageBitmap(bitmap);
                 }
             });
         }

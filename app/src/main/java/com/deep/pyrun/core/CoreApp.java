@@ -2,7 +2,7 @@ package com.deep.pyrun.core;
 
 import android.content.Intent;
 
-import com.deep.pyrun.util.RecordService;
+import com.deep.pyrun.service.RecordService;
 import com.intelligence.dpwork.DpWorkApplication;
 import com.intelligence.dpwork.annotation.DpBugly;
 import com.intelligence.dpwork.annotation.DpCrash;
@@ -14,7 +14,7 @@ import com.intelligence.dpwork.lang.LanguageType;
  * <p>
  * Created by Deepblue on 2018/9/29 0029.
  */
-@DpCrash
+// @DpCrash
 @DpLang(LanguageType.LANGUAGE_CHINESE_SIMPLIFIED)
 @DpBugly("801275d37c")
 public class CoreApp extends DpWorkApplication {

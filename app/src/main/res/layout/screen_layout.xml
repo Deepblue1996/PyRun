@@ -1,48 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:visibility="visible">
 
     <LinearLayout
-        android:layout_alignParentStart="true"
-        android:orientation="horizontal"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="200dp"
+        android:orientation="horizontal">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            <com.prohua.roundlayout.RoundAngleFrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                app:topLeftRadius="10dp"
+                app:topRightRadius="10dp">
 
-                <ImageView
-                    android:alpha="0.8"
-                    android:translationY="-60dp"
-                    android:scaleType="fitStart"
-                    android:id="@+id/screenImg"
-                    android:layout_width="200dp"
-                    android:layout_height="200dp" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-                <ImageView
-                    android:alpha="0.8"
-                    android:translationY="-130dp"
-                    android:scaleType="fitStart"
-                    android:id="@+id/screenImg2"
-                    android:layout_width="200dp"
-                    android:layout_height="200dp" />
+                    <ImageView
+                        android:id="@+id/screenImg"
+                        android:layout_width="200dp"
+                        android:layout_height="100dp"
+                        android:alpha="0.8"
+                        android:scaleType="fitStart" />
 
-            </LinearLayout>
-            <TextView
-                android:id="@+id/contentText"
-                android:padding="5dp"
-                android:text="检测结果"
-                android:background="#66000000"
-                android:textColor="@color/mBackGround"
-                android:layout_width="200dp"
-                android:layout_height="30dp" />
+                    <TextView
+                        android:id="@+id/contentText"
+                        android:layout_width="200dp"
+                        android:layout_height="30dp"
+                        android:background="#66000000"
+                        android:padding="5dp"
+                        android:text="@string/app_name"
+                        android:textColor="@color/mBackGround" />
+                </LinearLayout>
+            </com.prohua.roundlayout.RoundAngleFrameLayout>
 
         </RelativeLayout>
     </LinearLayout>
