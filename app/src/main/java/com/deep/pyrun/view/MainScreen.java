@@ -19,7 +19,9 @@ import com.deep.pyrun.R;
 import com.deep.pyrun.base.TBaseScreen;
 import com.deep.pyrun.bean.ScreenState;
 import com.deep.pyrun.broadcast.ScreenBroadcastReceive;
+import com.deep.pyrun.service.AutoClickService;
 import com.deep.pyrun.service.RecordService;
+import com.deep.pyrun.util.CmdSend;
 import com.deep.pyrun.util.DoModeUtil;
 import com.deep.pyrun.util.PackageName;
 import com.deep.pyrun.util.ScreenDeUtil;
@@ -57,6 +59,8 @@ public class MainScreen extends TBaseScreen {
     private MediaProjection mediaProjection;
     private RecordService recordService;
 
+    public static AutoClickService autoClickService;
+
     @Override
     public void init() {
 
@@ -72,6 +76,10 @@ public class MainScreen extends TBaseScreen {
         // 绑定服务
         Intent intent = new Intent(_dpActivity, RecordService.class);
         _dpActivity.bindService(intent, connection, BIND_AUTO_CREATE);
+
+        // 绑定服务
+        Intent intent2 = new Intent(_dpActivity, AutoClickService.class);
+        _dpActivity.bindService(intent2, connection2, BIND_AUTO_CREATE);
 
         // 申请录制屏幕，不做保存
         projectionManager = (MediaProjectionManager) _dpActivity.getSystemService(MEDIA_PROJECTION_SERVICE);
@@ -97,6 +105,17 @@ public class MainScreen extends TBaseScreen {
                     hasShowToast = false;
                 }
             });
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+        }
+    };
+
+    private ServiceConnection connection2 = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+
         }
 
         @Override

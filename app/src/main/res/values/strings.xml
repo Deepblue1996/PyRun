@@ -2,4 +2,5 @@
     <string name="app_name">匿名客</string>
     <string name="fenxi">脚本分析指令</string>
     <string name="anonymous">Anonymous</string>
+    <string name="anonymous_do">Anonymous模拟点击</string>
 </resources>

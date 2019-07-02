@@ -34,7 +34,7 @@ public class QuMoScript {
                     Lag.i("驱魔: 人物不动，正在判断超时");
                     MainScreen.scriptName = "人物不动，正在判断超时";
                 }
-                if (!ScreenRunUtil.peopleIsRun && System.currentTimeMillis() - ScreenRunUtil.peopleIsRunUpdate > 10000 && buZhou == 0) {
+                if (!ScreenRunUtil.peopleIsRun && System.currentTimeMillis() - ScreenRunUtil.peopleIsRunUpdate > 15000 && buZhou == 0) {
                     Lag.i("驱魔: 人物不动超过十秒");
                     buZhou = 1;
                     CmdSend.dos(CmdSend.Dos.DaKaiHuoDong);

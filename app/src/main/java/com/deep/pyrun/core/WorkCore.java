@@ -28,6 +28,7 @@ import java.io.OutputStream;
  * Created by Deepblue on 2018/9/29 0029.
  */
 @DpPermission({
+        Manifest.permission.BIND_ACCESSIBILITY_SERVICE,
         Manifest.permission.RECORD_AUDIO,
         Manifest.permission.SYSTEM_ALERT_WINDOW,
         Manifest.permission.READ_EXTERNAL_STORAGE,
