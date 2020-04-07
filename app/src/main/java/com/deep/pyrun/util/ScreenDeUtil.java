@@ -1,7 +1,7 @@
 package com.deep.pyrun.util;
 
+import com.deep.dpwork.util.Lag;
 import com.deep.pyrun.bean.ScreenState;
-import com.intelligence.dpwork.util.Lag;
 
 /**
  * 返回状态链式

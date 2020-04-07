@@ -10,28 +10,31 @@ import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.os.IBinder;
-import android.support.annotation.RequiresApi;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
+
+import com.deep.dpwork.annotation.DpLayout;
+import com.deep.dpwork.annotation.DpStatus;
+import com.deep.dpwork.itface.RunUi;
+import com.deep.dpwork.util.Lag;
+import com.deep.dpwork.util.ToastUtil;
+import com.deep.dpwork.weight.StatusBarPaddingView;
 import com.deep.pyrun.R;
 import com.deep.pyrun.base.TBaseScreen;
 import com.deep.pyrun.bean.ScreenState;
 import com.deep.pyrun.broadcast.ScreenBroadcastReceive;
 import com.deep.pyrun.service.AutoClickService;
 import com.deep.pyrun.service.RecordService;
-import com.deep.pyrun.util.CmdSend;
 import com.deep.pyrun.util.DoModeUtil;
 import com.deep.pyrun.util.PackageName;
 import com.deep.pyrun.util.ScreenDeUtil;
 import com.deep.pyrun.util.ScreenRunUtil;
 import com.deep.pyrun.util.ScreenSeeUtil;
-import com.intelligence.dpwork.annotation.DpLayout;
-import com.intelligence.dpwork.annotation.DpStatus;
-import com.intelligence.dpwork.itface.RunUi;
-import com.intelligence.dpwork.util.Lag;
-import com.intelligence.dpwork.util.ToastUtil;
+
+import butterknife.BindView;
 
 import static android.content.Context.BIND_AUTO_CREATE;
 import static android.content.Context.MEDIA_PROJECTION_SERVICE;
@@ -44,6 +47,9 @@ import static android.content.Context.MEDIA_PROJECTION_SERVICE;
 @DpStatus(blackFont = false)
 @DpLayout(R.layout.activity_main)
 public class MainScreen extends TBaseScreen {
+
+    @BindView(R.id.statusView)
+    StatusBarPaddingView statusView;
 
     private static final String appName = "com.tencent.ft";
     public static String scriptName = "";
@@ -87,6 +93,11 @@ public class MainScreen extends TBaseScreen {
         Intent captureIntent = projectionManager.createScreenCaptureIntent();
         startActivityForResult(captureIntent, RECORD_REQUEST_CODE);
 
+    }
+
+    @Override
+    public void onBack() {
+        return;
     }
 
     private ServiceConnection connection = new ServiceConnection() {
@@ -147,8 +158,7 @@ public class MainScreen extends TBaseScreen {
             recordService.startRecord();
 
             recordService.setBitmapScreenListener(new RecordService.BitmapScreenListener() {
-                @TargetApi(Build.VERSION_CODES.M)
-                @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
+
                 @Override
                 public void screenShow(final Bitmap bitmap) {
                     if (PackageName.isRunApp(getContext(), appName) == UsageEvents.Event.MOVE_TO_FOREGROUND) {
@@ -162,7 +172,7 @@ public class MainScreen extends TBaseScreen {
                         }
                     } else {
                         if (!hasShowToast) {
-                            screen.setVisibility(View.GONE);
+                            screen.setVisibility(View.VISIBLE);
                             hasShowToast = true;
                             isRun = false;
                             Lag.i("分析: Ft未进入");

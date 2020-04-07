@@ -1,11 +1,11 @@
 package com.deep.pyrun.script;
 
+import com.deep.dpwork.util.Lag;
 import com.deep.pyrun.bean.ScreenState;
 import com.deep.pyrun.script.bean.ScriptBean;
 import com.deep.pyrun.util.CmdSend;
 import com.deep.pyrun.util.ScreenRunUtil;
 import com.deep.pyrun.view.MainScreen;
-import com.intelligence.dpwork.util.Lag;
 
 /**
  * 驱魔

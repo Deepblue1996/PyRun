@@ -2,8 +2,8 @@ package com.deep.pyrun.util;
 
 import android.graphics.Bitmap;
 
+import com.deep.dpwork.util.Lag;
 import com.deep.pyrun.view.MainScreen;
-import com.intelligence.dpwork.util.Lag;
 
 import org.opencv.android.Utils;
 import org.opencv.core.Core;

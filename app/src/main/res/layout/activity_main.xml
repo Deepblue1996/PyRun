@@ -6,7 +6,8 @@
     android:background="@color/darkText"
     android:orientation="vertical">
 
-    <com.intelligence.dpwork.weight.StatusBarPaddingView
+    <com.deep.dpwork.weight.StatusBarPaddingView
+        android:id="@+id/statusView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

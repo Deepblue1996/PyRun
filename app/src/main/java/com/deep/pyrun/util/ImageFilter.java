@@ -14,9 +14,8 @@ import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 
+import com.deep.dpwork.util.DoubleUtil;
 import com.deep.pyrun.bean.MatXy;
-import com.intelligence.dpwork.util.DoubleUtil;
-import com.intelligence.dpwork.util.Lag;
 
 import org.opencv.android.Utils;
 import org.opencv.core.Core;

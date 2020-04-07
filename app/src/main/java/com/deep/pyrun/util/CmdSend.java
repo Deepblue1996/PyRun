@@ -1,8 +1,7 @@
 package com.deep.pyrun.util;
 
-import com.deep.pyrun.service.AutoClickService;
+import com.deep.dpwork.util.Lag;
 import com.deep.pyrun.view.MainScreen;
-import com.intelligence.dpwork.util.Lag;
 import com.jaredrummler.android.shell.CommandResult;
 import com.jaredrummler.android.shell.Shell;
 

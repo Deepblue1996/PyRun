@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
@@ -21,7 +20,6 @@ import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
 import com.deep.pyrun.broadcast.ScreenBroadcastReceive;
-import com.intelligence.dpwork.util.Lag;
 
 import java.nio.ByteBuffer;
 

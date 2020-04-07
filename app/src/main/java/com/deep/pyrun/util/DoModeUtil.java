@@ -3,7 +3,6 @@ package com.deep.pyrun.util;
 import com.deep.pyrun.bean.ScreenState;
 import com.deep.pyrun.script.QuMoScript;
 import com.deep.pyrun.script.bean.ScriptBean;
-import com.intelligence.dpwork.util.Lag;
 
 import java.util.Timer;
 import java.util.TimerTask;

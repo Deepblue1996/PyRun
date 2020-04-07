@@ -2,8 +2,8 @@ package com.deep.pyrun.util;
 
 import android.graphics.Bitmap;
 
+import com.deep.dpwork.util.Lag;
 import com.googlecode.tesseract.android.TessBaseAPI;
-import com.intelligence.dpwork.util.Lag;
 
 import static com.deep.pyrun.core.WorkCore.DATAPATH;
 import static com.deep.pyrun.core.WorkCore.DEFAULT_LANGUAGE;

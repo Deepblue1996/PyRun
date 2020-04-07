@@ -6,9 +6,10 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
 
-import com.intelligence.dpwork.util.Lag;
+import androidx.annotation.RequiresApi;
+
+import com.deep.dpwork.util.Lag;
 
 import java.lang.reflect.Field;
 import java.util.List;

@@ -1,6 +1,6 @@
 package com.deep.pyrun.base;
 
-import com.intelligence.dpwork.dialog.DialogScreen;
+import com.deep.dpwork.dialog.DialogScreen;
 
 import butterknife.ButterKnife;
 

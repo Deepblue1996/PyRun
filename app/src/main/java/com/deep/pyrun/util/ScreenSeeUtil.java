@@ -3,8 +3,8 @@ package com.deep.pyrun.util;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 
+import com.deep.dpwork.util.Lag;
 import com.deep.pyrun.bean.MatXy;
-import com.intelligence.dpwork.util.Lag;
 
 /**
  * 当前界面状态分析

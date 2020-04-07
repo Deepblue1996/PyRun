@@ -6,13 +6,13 @@ import android.accessibilityservice.GestureDescription.Builder;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import androidx.annotation.RequiresApi;
+
+import com.deep.dpwork.util.Lag;
 import com.deep.pyrun.view.MainScreen;
-import com.intelligence.dpwork.util.DisplayUtil;
-import com.intelligence.dpwork.util.Lag;
 
 /**
  * Class -

@@ -6,6 +6,7 @@
     android:layout_height="match_parent">
 
     <ImageView
+        android:id="@+id/logoImg"
         android:src="@mipmap/ic_launcher"
         android:layout_width="100dp"
         android:layout_height="100dp" />
