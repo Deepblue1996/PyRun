@@ -1,20 +1,21 @@
 package com.deep.pyrun.view;
 
-import android.annotation.TargetApi;
+import android.app.AppOpsManager;
 import android.app.usage.UsageEvents;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
+import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import androidx.annotation.RequiresApi;
 
 import com.deep.dpwork.annotation.DpLayout;
 import com.deep.dpwork.annotation.DpStatus;
@@ -33,6 +34,9 @@ import com.deep.pyrun.util.PackageName;
 import com.deep.pyrun.util.ScreenDeUtil;
 import com.deep.pyrun.util.ScreenRunUtil;
 import com.deep.pyrun.util.ScreenSeeUtil;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import butterknife.BindView;
 
@@ -77,7 +81,17 @@ public class MainScreen extends TBaseScreen {
         contentText = screen.findViewById(R.id.contentText);
         contentText2 = screen.findViewById(R.id.contentText2);
 
-        createToucher(screen);
+        if (checkFloatPermission(getContext())) {
+            createToucher(screen);
+        } else {
+
+            String androidSDK = Build.VERSION.SDK;
+            if (Integer.parseInt(androidSDK) >= 23 && !Settings.canDrawOverlays(_dpActivity)) {
+                Intent intent2 = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                startActivityForResult(intent2, 1065);
+            }
+
+        }
 
         // 绑定服务
         Intent intent = new Intent(_dpActivity, RecordService.class);
@@ -93,6 +107,43 @@ public class MainScreen extends TBaseScreen {
         Intent captureIntent = projectionManager.createScreenCaptureIntent();
         startActivityForResult(captureIntent, RECORD_REQUEST_CODE);
 
+    }
+
+    private boolean checkFloatPermission(Context context) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
+            return true;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            try {
+                Class cls = Class.forName("android.content.Context");
+                Field declaredField = cls.getDeclaredField("APP_OPS_SERVICE");
+                declaredField.setAccessible(true);
+                Object obj = declaredField.get(cls);
+                if (!(obj instanceof String)) {
+                    return false;
+                }
+                String str2 = (String) obj;
+                obj = cls.getMethod("getSystemService", String.class).invoke(context, str2);
+                cls = Class.forName("android.app.AppOpsManager");
+                Field declaredField2 = cls.getDeclaredField("MODE_ALLOWED");
+                declaredField2.setAccessible(true);
+                Method checkOp = cls.getMethod("checkOp", Integer.TYPE, Integer.TYPE, String.class);
+                int result = (Integer) checkOp.invoke(obj, 24, Binder.getCallingUid(), context.getPackageName());
+                return result == declaredField2.getInt(cls);
+            } catch (Exception e) {
+                return false;
+            }
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                AppOpsManager appOpsMgr = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
+                if (appOpsMgr == null)
+                    return false;
+                int mode = appOpsMgr.checkOpNoThrow("android:system_alert_window", android.os.Process.myUid(), context
+                        .getPackageName());
+                return mode == AppOpsManager.MODE_ALLOWED || mode == AppOpsManager.MODE_IGNORED;
+            } else {
+                return Settings.canDrawOverlays(context);
+            }
+        }
     }
 
     @Override
@@ -136,8 +187,10 @@ public class MainScreen extends TBaseScreen {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
+        recordService.stopSelf();
+        autoClickService.stopSelf();
         ScreenRunUtil.get().recycle();
+        super.onDestroy();
     }
 
     private boolean hasShowToast = false;
@@ -152,7 +205,15 @@ public class MainScreen extends TBaseScreen {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RECORD_REQUEST_CODE && resultCode == RESULT_OK) {
+
+        if (requestCode == 1065) {
+            if (checkFloatPermission(getContext())) {
+                ToastUtil.showSuccess("悬浮窗权限申请成功...");
+                createToucher(screen);
+            } else {
+                ToastUtil.showError("悬浮窗权限申请失败...");
+            }
+        } else if (requestCode == RECORD_REQUEST_CODE && resultCode == RESULT_OK) {
             mediaProjection = projectionManager.getMediaProjection(resultCode, data);
             recordService.setMediaProject(mediaProjection);
             recordService.startRecord();

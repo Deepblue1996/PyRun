@@ -20,6 +20,7 @@ import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
 import com.deep.pyrun.broadcast.ScreenBroadcastReceive;
+import com.deep.pyrun.view.MainScreen;
 
 import java.nio.ByteBuffer;
 
@@ -68,7 +69,6 @@ public class RecordService extends Service {
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.intent.action.CONFIGURATION_CHANGED");
         registerReceiver(screenBroadcastReceive, filter);
-
     }
 
     @Override
